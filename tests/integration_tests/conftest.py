@@ -13,6 +13,7 @@ from asynctest import exhaust_callbacks
 from server import GameService, run_control_server, run_lobby_server
 from server.db.models import login
 from server.ladder_service import LadderService
+from server.party_service import PartyService
 from server.protocol import QDataStreamProtocol
 from server.rating_service.rating_service import RatingService
 
@@ -59,6 +60,7 @@ async def lobby_server(
             player_service=player_service,
             game_service=game_service,
             ladder_service=ladder_service,
+            party_service=PartyService(game_service),
             nts_client=None,
             loop=event_loop,
         )

@@ -11,19 +11,19 @@ from typing import Optional
 
 from prometheus_client import start_http_server
 
-from server.db import FAFDatabase
-
 from .config import config
 from .configuration_service import ConfigurationService
 from .control import run_control_server
+from .db import FAFDatabase
 from .game_service import GameService
 from .gameconnection import GameConnection
-from .games.game import GameState, VisibilityState
+from .games import GameState, VisibilityState
 from .geoip_service import GeoIpService
 from .ice_servers.nts import TwilioNTS
 from .ladder_service import LadderService
 from .lobbyconnection import LobbyConnection
 from .message_queue_service import MessageQueueService
+from .party_service import PartyService
 from .player_service import PlayerService
 from .protocol import QDataStreamProtocol
 from .rating_service.rating_service import RatingService
@@ -41,6 +41,7 @@ __all__ = (
     'GameStatsService',
     'GameService',
     'LadderService',
+    'PartyService',
     'RatingService',
     'run_lobby_server',
     'run_control_server',
@@ -73,6 +74,7 @@ async def run_lobby_server(
     nts_client: Optional[TwilioNTS],
     geoip_service: GeoIpService,
     ladder_service: LadderService,
+    party_service: PartyService,
     loop,
 ) -> ServerContext:
     """
@@ -146,11 +148,12 @@ async def run_lobby_server(
     def make_connection() -> LobbyConnection:
         return LobbyConnection(
             database=database,
-            geoip=geoip_service,
             game_service=game_service,
-            nts_client=nts_client,
             players=player_service,
-            ladder_service=ladder_service
+            nts_client=nts_client,
+            geoip=geoip_service,
+            ladder_service=ladder_service,
+            party_service=party_service
         )
 
     ctx = ServerContext(make_connection, name="LobbyServer")

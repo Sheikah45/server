@@ -104,6 +104,7 @@ async def main():
         game_service=services["game_service"],
         nts_client=twilio_nts,
         ladder_service=services["ladder_service"],
+        party_service=services["party_service"],
         loop=loop
     )
 
